@@ -1049,7 +1049,14 @@ it's RECOMMENDED to:
 | -------- | --------------- | ----------- | -------------- | --------- | ------ |
 | `mcp.client.operation.active` | UpDownCounter | `{operation}` | The number of MCP requests and notifications in progress as observed on the sender. [1] | ![Development](https://img.shields.io/badge/-development-blue) | |
 
-**[1]:** An operation is in progress from the time the request or notification is sent until the response or ack is received, which is the interval measured by `mcp.client.operation.duration`.
+**[1]:** An operation is in progress from the time the request or notification is sent
+until the response or ack is received, which is the interval measured by
+`mcp.client.operation.duration`. A notification that is not acknowledged, such
+as one sent over stdio, ends once it is sent. A request that is cancelled, times
+out, or is still pending when the connection closes ends at that point.
+
+The counter SHOULD be incremented and decremented with the same attributes,
+which are the ones known when the operation starts.
 
 **Requirement level:** [Opt-In](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/general/signal-requirement-level.md).
 
@@ -1168,7 +1175,16 @@ is HTTP. It SHOULD be set to `pipe` if the transport is stdio.
 | -------- | --------------- | ----------- | -------------- | --------- | ------ |
 | `mcp.server.operation.active` | UpDownCounter | `{operation}` | The number of MCP requests and notifications in progress as observed on the receiver. [1] | ![Development](https://img.shields.io/badge/-development-blue) | |
 
-**[1]:** An operation is in progress from the time the request or notification is received until the result or ack is sent, which is the interval measured by `mcp.server.operation.duration`.
+**[1]:** An operation is in progress from the time the request or notification is received
+until the result or ack is sent, which is the interval measured by
+`mcp.server.operation.duration`. A request that is cancelled, or is still pending
+when the connection closes, ends at that point. A notification that is not
+acknowledged, such as one received over stdio, ends when the receiver finishes
+processing it. Instrumentation that cannot observe when processing finishes
+SHOULD NOT count such notifications.
+
+The counter SHOULD be incremented and decremented with the same attributes,
+which are the ones known when the operation starts.
 
 **Requirement level:** [Opt-In](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/general/signal-requirement-level.md).
 
@@ -1285,10 +1301,10 @@ of `[ 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216 ]`.
 | -------- | --------------- | ----------- | -------------- | --------- | ------ |
 | `mcp.client.request.size` | Histogram | `By` | The size of the MCP request or notification as observed on the sender. [1] | ![Development](https://img.shields.io/badge/-development-blue) | |
 
-**[1]:** The size, in bytes, of the JSON-RPC request or notification message as
-serialized by the sender, excluding transport framing such as HTTP headers,
-server-sent event fields, or stdio message delimiters. When the transport
-compresses the message, the uncompressed size SHOULD be recorded.
+**[1]:** The size, in bytes, of the UTF-8 encoded JSON-RPC request or notification
+message as serialized by the sender, excluding transport framing such as HTTP
+headers, server-sent event fields, or stdio message delimiters. When the
+transport compresses the message, the uncompressed size SHOULD be recorded.
 
 This metric SHOULD be recorded when the operation ends, with the same
 attributes as `mcp.client.operation.duration`.
@@ -1446,12 +1462,14 @@ of `[ 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216 ]`.
 | -------- | --------------- | ----------- | -------------- | --------- | ------ |
 | `mcp.client.response.size` | Histogram | `By` | The size of the MCP response as observed on the sender. [1] | ![Development](https://img.shields.io/badge/-development-blue) | |
 
-**[1]:** The size, in bytes, of the JSON-RPC response message (result or error)
-received for the request, excluding transport framing such as HTTP headers,
-server-sent event fields, or stdio message delimiters. When the transport
-compresses the message, the uncompressed size SHOULD be recorded. Other
-messages received while the request is in progress, such as progress
-notifications, are not included.
+**[1]:** The size, in bytes, of the UTF-8 encoded JSON-RPC response message (result or
+error) received for the request, excluding transport framing such as HTTP
+headers, server-sent event fields, or stdio message delimiters. When the
+transport compresses the message, the uncompressed size SHOULD be recorded.
+Instrumentation that does not have access to the received bytes MAY record the
+size of the message re-serialized as compact JSON. Other messages received
+while the request is in progress, such as progress notifications, are not
+included.
 
 This metric SHOULD NOT be recorded for notifications or when no response
 is received.
@@ -1609,10 +1627,12 @@ of `[ 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216 ]`.
 | -------- | --------------- | ----------- | -------------- | --------- | ------ |
 | `mcp.server.request.size` | Histogram | `By` | The size of the MCP request or notification as observed on the receiver. [1] | ![Development](https://img.shields.io/badge/-development-blue) | |
 
-**[1]:** The size, in bytes, of the JSON-RPC request or notification message as
-received, excluding transport framing such as HTTP headers, server-sent
-event fields, or stdio message delimiters. When the transport compresses
-the message, the uncompressed size SHOULD be recorded.
+**[1]:** The size, in bytes, of the UTF-8 encoded JSON-RPC request or notification
+message as received, excluding transport framing such as HTTP headers,
+server-sent event fields, or stdio message delimiters. When the transport
+compresses the message, the uncompressed size SHOULD be recorded.
+Instrumentation that does not have access to the received bytes MAY record the
+size of the message re-serialized as compact JSON.
 
 This metric SHOULD be recorded when the operation ends, with the same
 attributes as `mcp.server.operation.duration`.
@@ -1774,8 +1794,8 @@ of `[ 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216 ]`.
 | -------- | --------------- | ----------- | -------------- | --------- | ------ |
 | `mcp.server.response.size` | Histogram | `By` | The size of the MCP response as observed on the receiver. [1] | ![Development](https://img.shields.io/badge/-development-blue) | |
 
-**[1]:** The size, in bytes, of the JSON-RPC response message (result or error)
-sent for the request, excluding transport framing such as HTTP headers,
+**[1]:** The size, in bytes, of the UTF-8 encoded JSON-RPC response message (result or
+error) sent for the request, excluding transport framing such as HTTP headers,
 server-sent event fields, or stdio message delimiters. When the transport
 compresses the message, the uncompressed size SHOULD be recorded. Other
 messages sent while the request is in progress, such as progress
