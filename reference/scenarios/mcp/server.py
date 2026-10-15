@@ -23,6 +23,7 @@ WEATHER_PROMPT = types.Prompt(
     description="Ask for a short weather report for a city.",
     arguments=[types.PromptArgument(name="city", required=True)],
 )
+WEATHER_RESOURCE = types.Resource(name="paris_weather", uri="weather://paris", mime_type="text/plain")
 
 
 async def list_tools(ctx, params):
@@ -50,6 +51,18 @@ async def get_prompt(ctx, params: types.GetPromptRequestParams):
     return types.GetPromptResult(messages=[message])
 
 
+async def list_resources(ctx, params):
+    # Serving resources/list is what makes the server advertise the resources capability.
+    return types.ListResourcesResult(resources=[WEATHER_RESOURCE])
+
+
+async def read_resource(ctx, params: types.ReadResourceRequestParams):
+    if params.uri != WEATHER_RESOURCE.uri:
+        raise MCPError(code=-32002, message=f"Resource not found: {params.uri}")
+    contents = types.TextResourceContents(uri=params.uri, mime_type="text/plain", text="Sunny, 22°C")
+    return types.ReadResourceResult(contents=[contents])
+
+
 async def serve():
     server = Server(
         "weather",
@@ -57,6 +70,8 @@ async def serve():
         on_call_tool=call_tool,
         on_list_prompts=list_prompts,
         on_get_prompt=get_prompt,
+        on_list_resources=list_resources,
+        on_read_resource=read_resource,
     )
     async with stdio_server() as (read_stream, write_stream):
         # stdio talks to the client over this process's stdin and stdout pipes.

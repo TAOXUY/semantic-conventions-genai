@@ -31,6 +31,6 @@
 
 | Attribute | Supporting Libraries |
 | --- | --- |
-| mcp.resource.uri | (none) |
+| mcp.resource.uri | [mcp] |
 
 [mcp]: ../scenarios/mcp/scenario.py

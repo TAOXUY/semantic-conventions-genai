@@ -116,11 +116,13 @@ def suppress_sdk_spans() -> None:
     sdk_otel._tracer = trace.NoOpTracer()
 
 
-def _wire_size(message: types.JSONRPCMessage) -> int:
-    """Bytes the SDK's stdio transports write for the message, without the newline delimiter.
+def _message_size(message: types.JSONRPCMessage) -> int:
+    """Size of the message as compact UTF-8 JSON, without the newline delimiter.
 
-    Both transports serialize every outgoing message exactly like this. A received
-    message re-serializes to the bytes its sender wrote, since both ends are this SDK.
+    For a sent message these are exactly the bytes the SDK's stdio transports
+    write. A received message reaches this code already parsed, so this is the
+    re-serialized size the conventions allow when the received bytes are not
+    available.
     """
     return len(message.model_dump_json(by_alias=True, exclude_unset=True).encode("utf-8"))
 
@@ -133,6 +135,8 @@ class _Operation:
     # Known when the operation starts; the active counter is updated with exactly these.
     attributes: dict[str, str]
     request_size: int
+    # Opt-in on the duration and size metrics, which the active counter does not share.
+    resource_uri: str | None = None
     start: float = field(default_factory=time.perf_counter)
 
 
@@ -156,19 +160,30 @@ class _MessageMetrics:
         if self._protocol_version is not None:
             attributes["mcp.protocol.version"] = self._protocol_version
         params = message.params or {}
+        name, uri = params.get("name"), params.get("uri")
         if message.method == "tools/call":
             attributes["gen_ai.operation.name"] = "execute_tool"
-            attributes["gen_ai.tool.name"] = params["name"]
-        elif message.method == "prompts/get":
-            attributes["gen_ai.prompt.name"] = params["name"]
+            if isinstance(name, str):
+                attributes["gen_ai.tool.name"] = name
+        elif message.method == "prompts/get" and isinstance(name, str):
+            attributes["gen_ai.prompt.name"] = name
         instruments.active.add(1, attributes)
-        return _Operation(instruments, attributes, size)
+        # Only the resource requests and notifications carry a top-level `uri`.
+        return _Operation(instruments, attributes, size, resource_uri=uri if isinstance(uri, str) else None)
 
-    def _end(self, operation: _Operation, response: types.JSONRPCMessage | None = None, size: int | None = None):
+    def _end(
+        self,
+        operation: _Operation,
+        response: types.JSONRPCMessage | None = None,
+        size: int | None = None,
+        error_type: str | None = None,
+    ):
         instruments = operation.instruments
         duration = time.perf_counter() - operation.start
         instruments.active.add(-1, operation.attributes)
         attributes = dict(operation.attributes)
+        if operation.resource_uri is not None:
+            attributes["mcp.resource.uri"] = operation.resource_uri
         if isinstance(response, types.JSONRPCResponse) and attributes["mcp.method.name"] == "initialize":
             # The version the server picked; every later operation on this connection uses it.
             self._protocol_version = response.result["protocolVersion"]
@@ -178,16 +193,31 @@ class _MessageMetrics:
             attributes["rpc.response.status_code"] = str(code)
             if code not in instruments.non_error_codes:
                 attributes["error.type"] = str(code)
+        if error_type is not None:
+            attributes["error.type"] = error_type
         instruments.duration.record(duration, attributes)
         instruments.request_size.record(operation.request_size, attributes)
         # Only an answered request has a response to measure.
         if size is not None:
             instruments.response_size.record(size, attributes)
 
+    def _cancel(self, pending: dict[types.RequestId, _Operation], notification: types.JSONRPCNotification) -> None:
+        """End the request a `notifications/cancelled` names: MCP never answers a cancelled request."""
+        request_id = (notification.params or {}).get("requestId")
+        if isinstance(request_id, int | str) and request_id in pending:
+            self._end(pending.pop(request_id), error_type="cancelled")
+
+    def close(self) -> None:
+        """End every request the connection leaves unanswered."""
+        for pending in (self._sent, self._received):
+            while pending:
+                # The code the SDK fails a pending request with when the connection closes.
+                self._end(pending.popitem()[1], error_type=str(types.CONNECTION_CLOSED))
+
     async def send(self, write_stream, item: SessionMessage) -> None:
         """Hand `item` to the transport, recording the operation it starts or ends."""
         message = item.message
-        size = _wire_size(message)
+        size = _message_size(message)
         if isinstance(message, types.JSONRPCRequest):
             self._sent[message.id] = self._start(_CLIENT, message, size)
             await write_stream.send(item)
@@ -196,6 +226,8 @@ class _MessageMetrics:
             operation = self._start(_CLIENT, message, size)
             await write_stream.send(item)
             self._end(operation)
+            if message.method == "notifications/cancelled":
+                self._cancel(self._sent, message)
         else:
             await write_stream.send(item)
             if message.id in self._received:
@@ -203,13 +235,15 @@ class _MessageMetrics:
 
     def received(self, message: types.JSONRPCMessage) -> None:
         """Record the operation a message the transport delivered starts or ends."""
-        size = _wire_size(message)
+        size = _message_size(message)
         if isinstance(message, types.JSONRPCRequest):
             self._received[message.id] = self._start(_SERVER, message, size)
         elif isinstance(message, types.JSONRPCResponse | types.JSONRPCError) and message.id in self._sent:
             self._end(self._sent.pop(message.id), message, size)
-        # Nothing answers a received notification on stdio, so the receiver never
-        # sees it end; only its sender records it.
+        elif isinstance(message, types.JSONRPCNotification) and message.method == "notifications/cancelled":
+            self._cancel(self._received, message)
+        # Nothing acknowledges a received notification on stdio, and its processing
+        # isn't visible from the transport, so the receiver does not record it.
 
 
 class _ReadStream:
@@ -218,7 +252,11 @@ class _ReadStream:
         self._recorder = recorder
 
     async def receive(self):
-        item = await self._inner.receive()
+        try:
+            item = await self._inner.receive()
+        except anyio.EndOfStream:
+            self._recorder.close()
+            raise
         if isinstance(item, SessionMessage):
             self._recorder.received(item.message)
         return item
@@ -238,6 +276,7 @@ class _ReadStream:
             raise StopAsyncIteration from None
 
     async def aclose(self):
+        self._recorder.close()
         await self._inner.aclose()
 
     async def __aenter__(self):
@@ -303,6 +342,10 @@ async def run_client():
             print("  [prompts/get] weather_report")
             prompt = await session.get_prompt("weather_report", {"city": "Paris"})
             print(f"    -> {prompt.messages[0].content.text}")
+
+            print("  [resources/read] weather://paris")
+            resource = await session.read_resource("weather://paris")
+            print(f"    -> {resource.contents[0].text}")
 
 
 def main():
