@@ -33,7 +33,6 @@
 
 | Attribute | Supporting Libraries |
 | --- | --- |
-| gen_ai.prompt.variable | (none) |
 | mcp.resource.uri | (none) |
 
 [mcp]: ../scenarios/mcp/scenario.py

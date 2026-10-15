@@ -21,6 +21,4 @@ would be counted as GenAI `execute_tool` spans and fail that span's name check.
 On stdio there is no server address or application-layer protocol, so
 `server.address`, `server.port`, and `network.protocol.*` are not set, and the
 SDK only speaks JSON-RPC 2.0, so `jsonrpc.protocol.version` is not set either.
-Of the opt-in attributes, `mcp.resource.uri` has no resource operation to
-describe here, and `gen_ai.prompt.variable` is left off the metrics because it
-would put prompt argument values into their attribute sets.
+The opt-in `mcp.resource.uri` has no resource operation to describe here.

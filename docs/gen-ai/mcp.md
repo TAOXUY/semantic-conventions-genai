@@ -624,8 +624,7 @@ of `[ 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 30, 60, 120, 300 ]`.
 | [`network.transport`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` | string | The transport protocol used for the observed MCP operation. [6] | `tcp`; `quic`; `pipe` |
 | [`server.address`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/server.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` If applicable. | string | Server domain name if available without reverse DNS lookup; otherwise, IP address or UNIX domain socket name. [7] | `example.com`; `10.1.2.80`; `/tmp/my.sock` |
 | [`server.port`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/server.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When `server.address` is set. | int | Server port number. [8] | `80`; `8080`; `443` |
-| [`gen_ai.prompt.variable`](/docs/registry/attributes/gen-ai.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The variables supplied to the prompt template in the request. [9] | `Alice`; `French` |
-| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [10] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
+| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [9] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
 
 **[1] `error.type`:** When the response carries a JSON-RPC error code that classifies as an error,
 `error.type` SHOULD be set to the string representation of that code. See
@@ -659,22 +658,7 @@ is HTTP. It SHOULD be set to `pipe` if the transport is stdio.
 
 **[8] `server.port`:** When observed from the client side, and when communicating through an intermediary, `server.port` SHOULD represent the server port behind any intermediaries, for example proxies, if it's available.
 
-**[9] `gen_ai.prompt.variable`:** Prompt templates are parameterized with variables that are filled in
-at runtime. This attribute records the variable values passed to the
-template. The attribute name defines the variable name, and the
-attribute value is the variable value serialized as a string.
-
-Examples:
-
-- A variable `user_name` with value `Alice` SHOULD be recorded as
-  the `gen_ai.prompt.variable.user_name` attribute with value `"Alice"`.
-- A variable `language` with value `French` SHOULD be recorded as
-  the `gen_ai.prompt.variable.language` attribute with value `"French"`.
-
-> [!Warning]
-> This attribute may contain sensitive information.
-
-**[10] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
+**[9] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
 
 ---
 
@@ -698,7 +682,7 @@ Examples:
 | `delete_memory_store` | Delete or deprovision a memory store | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
-| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [11] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [10] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `generate_content` | Multimodal content generation operation such as [Gemini Generate Content](https://ai.google.dev/api/generate-content) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_agent` | Invoke GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_workflow` | Invoke GenAI workflow | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -709,7 +693,7 @@ Examples:
 | `update_memory` | Update existing memory records | ![Development](https://img.shields.io/badge/-development-blue) |
 | `upsert_memory` | Create or update memory records without the caller choosing which | ![Development](https://img.shields.io/badge/-development-blue) |
 
-**[11]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
+**[10]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
 
 ---
 
@@ -791,8 +775,7 @@ of `[ 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 30, 60, 120, 300 ]`.
 | [`network.protocol.name`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When applicable. | string | [OSI application layer](https://wikipedia.org/wiki/Application_layer) or non-OSI equivalent. [5] | `http`; `websocket` |
 | [`network.protocol.version`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When applicable. | string | The actual version of the protocol used for network communication. | `1.1`; `2` |
 | [`network.transport`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` | string | The transport protocol used for the observed MCP operation. [6] | `tcp`; `quic`; `pipe` |
-| [`gen_ai.prompt.variable`](/docs/registry/attributes/gen-ai.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The variables supplied to the prompt template in the request. [7] | `Alice`; `French` |
-| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [8] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
+| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [7] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
 
 **[1] `error.type`:** When the response carries a JSON-RPC error code that classifies as an error,
 `error.type` SHOULD be set to the string representation of that code. See
@@ -832,22 +815,7 @@ Any other error code SHOULD be considered an error.
 **[6] `network.transport`:** This attribute SHOULD be set to `tcp` or `quic` if the transport protocol
 is HTTP. It SHOULD be set to `pipe` if the transport is stdio.
 
-**[7] `gen_ai.prompt.variable`:** Prompt templates are parameterized with variables that are filled in
-at runtime. This attribute records the variable values passed to the
-template. The attribute name defines the variable name, and the
-attribute value is the variable value serialized as a string.
-
-Examples:
-
-- A variable `user_name` with value `Alice` SHOULD be recorded as
-  the `gen_ai.prompt.variable.user_name` attribute with value `"Alice"`.
-- A variable `language` with value `French` SHOULD be recorded as
-  the `gen_ai.prompt.variable.language` attribute with value `"French"`.
-
-> [!Warning]
-> This attribute may contain sensitive information.
-
-**[8] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
+**[7] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
 
 ---
 
@@ -871,7 +839,7 @@ Examples:
 | `delete_memory_store` | Delete or deprovision a memory store | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
-| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [9] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [8] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `generate_content` | Multimodal content generation operation such as [Gemini Generate Content](https://ai.google.dev/api/generate-content) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_agent` | Invoke GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_workflow` | Invoke GenAI workflow | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -882,7 +850,7 @@ Examples:
 | `update_memory` | Update existing memory records | ![Development](https://img.shields.io/badge/-development-blue) |
 | `upsert_memory` | Create or update memory records without the caller choosing which | ![Development](https://img.shields.io/badge/-development-blue) |
 
-**[9]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
+**[8]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
 
 ---
 
@@ -1344,8 +1312,7 @@ attributes as `mcp.client.operation.duration`.
 | [`network.transport`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` | string | The transport protocol used for the observed MCP operation. [6] | `tcp`; `quic`; `pipe` |
 | [`server.address`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/server.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` If applicable. | string | Server domain name if available without reverse DNS lookup; otherwise, IP address or UNIX domain socket name. [7] | `example.com`; `10.1.2.80`; `/tmp/my.sock` |
 | [`server.port`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/server.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When `server.address` is set. | int | Server port number. [8] | `80`; `8080`; `443` |
-| [`gen_ai.prompt.variable`](/docs/registry/attributes/gen-ai.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The variables supplied to the prompt template in the request. [9] | `Alice`; `French` |
-| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [10] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
+| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [9] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
 
 **[1] `error.type`:** When the response carries a JSON-RPC error code that classifies as an error,
 `error.type` SHOULD be set to the string representation of that code. See
@@ -1379,22 +1346,7 @@ is HTTP. It SHOULD be set to `pipe` if the transport is stdio.
 
 **[8] `server.port`:** When observed from the client side, and when communicating through an intermediary, `server.port` SHOULD represent the server port behind any intermediaries, for example proxies, if it's available.
 
-**[9] `gen_ai.prompt.variable`:** Prompt templates are parameterized with variables that are filled in
-at runtime. This attribute records the variable values passed to the
-template. The attribute name defines the variable name, and the
-attribute value is the variable value serialized as a string.
-
-Examples:
-
-- A variable `user_name` with value `Alice` SHOULD be recorded as
-  the `gen_ai.prompt.variable.user_name` attribute with value `"Alice"`.
-- A variable `language` with value `French` SHOULD be recorded as
-  the `gen_ai.prompt.variable.language` attribute with value `"French"`.
-
-> [!Warning]
-> This attribute may contain sensitive information.
-
-**[10] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
+**[9] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
 
 ---
 
@@ -1418,7 +1370,7 @@ Examples:
 | `delete_memory_store` | Delete or deprovision a memory store | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
-| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [11] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [10] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `generate_content` | Multimodal content generation operation such as [Gemini Generate Content](https://ai.google.dev/api/generate-content) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_agent` | Invoke GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_workflow` | Invoke GenAI workflow | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -1429,7 +1381,7 @@ Examples:
 | `update_memory` | Update existing memory records | ![Development](https://img.shields.io/badge/-development-blue) |
 | `upsert_memory` | Create or update memory records without the caller choosing which | ![Development](https://img.shields.io/badge/-development-blue) |
 
-**[11]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
+**[10]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
 
 ---
 
@@ -1523,8 +1475,7 @@ is received.
 | [`network.transport`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` | string | The transport protocol used for the observed MCP operation. [6] | `tcp`; `quic`; `pipe` |
 | [`server.address`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/server.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` If applicable. | string | Server domain name if available without reverse DNS lookup; otherwise, IP address or UNIX domain socket name. [7] | `example.com`; `10.1.2.80`; `/tmp/my.sock` |
 | [`server.port`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/server.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When `server.address` is set. | int | Server port number. [8] | `80`; `8080`; `443` |
-| [`gen_ai.prompt.variable`](/docs/registry/attributes/gen-ai.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The variables supplied to the prompt template in the request. [9] | `Alice`; `French` |
-| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [10] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
+| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [9] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
 
 **[1] `error.type`:** When the response carries a JSON-RPC error code that classifies as an error,
 `error.type` SHOULD be set to the string representation of that code. See
@@ -1558,22 +1509,7 @@ is HTTP. It SHOULD be set to `pipe` if the transport is stdio.
 
 **[8] `server.port`:** When observed from the client side, and when communicating through an intermediary, `server.port` SHOULD represent the server port behind any intermediaries, for example proxies, if it's available.
 
-**[9] `gen_ai.prompt.variable`:** Prompt templates are parameterized with variables that are filled in
-at runtime. This attribute records the variable values passed to the
-template. The attribute name defines the variable name, and the
-attribute value is the variable value serialized as a string.
-
-Examples:
-
-- A variable `user_name` with value `Alice` SHOULD be recorded as
-  the `gen_ai.prompt.variable.user_name` attribute with value `"Alice"`.
-- A variable `language` with value `French` SHOULD be recorded as
-  the `gen_ai.prompt.variable.language` attribute with value `"French"`.
-
-> [!Warning]
-> This attribute may contain sensitive information.
-
-**[10] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
+**[9] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
 
 ---
 
@@ -1597,7 +1533,7 @@ Examples:
 | `delete_memory_store` | Delete or deprovision a memory store | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
-| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [11] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [10] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `generate_content` | Multimodal content generation operation such as [Gemini Generate Content](https://ai.google.dev/api/generate-content) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_agent` | Invoke GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_workflow` | Invoke GenAI workflow | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -1608,7 +1544,7 @@ Examples:
 | `update_memory` | Update existing memory records | ![Development](https://img.shields.io/badge/-development-blue) |
 | `upsert_memory` | Create or update memory records without the caller choosing which | ![Development](https://img.shields.io/badge/-development-blue) |
 
-**[11]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
+**[10]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
 
 ---
 
@@ -1698,8 +1634,7 @@ attributes as `mcp.server.operation.duration`.
 | [`network.protocol.name`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When applicable. | string | [OSI application layer](https://wikipedia.org/wiki/Application_layer) or non-OSI equivalent. [5] | `http`; `websocket` |
 | [`network.protocol.version`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When applicable. | string | The actual version of the protocol used for network communication. | `1.1`; `2` |
 | [`network.transport`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` | string | The transport protocol used for the observed MCP operation. [6] | `tcp`; `quic`; `pipe` |
-| [`gen_ai.prompt.variable`](/docs/registry/attributes/gen-ai.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The variables supplied to the prompt template in the request. [7] | `Alice`; `French` |
-| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [8] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
+| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [7] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
 
 **[1] `error.type`:** When the response carries a JSON-RPC error code that classifies as an error,
 `error.type` SHOULD be set to the string representation of that code. See
@@ -1739,22 +1674,7 @@ Any other error code SHOULD be considered an error.
 **[6] `network.transport`:** This attribute SHOULD be set to `tcp` or `quic` if the transport protocol
 is HTTP. It SHOULD be set to `pipe` if the transport is stdio.
 
-**[7] `gen_ai.prompt.variable`:** Prompt templates are parameterized with variables that are filled in
-at runtime. This attribute records the variable values passed to the
-template. The attribute name defines the variable name, and the
-attribute value is the variable value serialized as a string.
-
-Examples:
-
-- A variable `user_name` with value `Alice` SHOULD be recorded as
-  the `gen_ai.prompt.variable.user_name` attribute with value `"Alice"`.
-- A variable `language` with value `French` SHOULD be recorded as
-  the `gen_ai.prompt.variable.language` attribute with value `"French"`.
-
-> [!Warning]
-> This attribute may contain sensitive information.
-
-**[8] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
+**[7] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
 
 ---
 
@@ -1778,7 +1698,7 @@ Examples:
 | `delete_memory_store` | Delete or deprovision a memory store | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
-| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [9] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [8] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `generate_content` | Multimodal content generation operation such as [Gemini Generate Content](https://ai.google.dev/api/generate-content) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_agent` | Invoke GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_workflow` | Invoke GenAI workflow | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -1789,7 +1709,7 @@ Examples:
 | `update_memory` | Update existing memory records | ![Development](https://img.shields.io/badge/-development-blue) |
 | `upsert_memory` | Create or update memory records without the caller choosing which | ![Development](https://img.shields.io/badge/-development-blue) |
 
-**[9]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
+**[8]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
 
 ---
 
@@ -1880,8 +1800,7 @@ This metric SHOULD NOT be recorded for notifications.
 | [`network.protocol.name`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When applicable. | string | [OSI application layer](https://wikipedia.org/wiki/Application_layer) or non-OSI equivalent. [5] | `http`; `websocket` |
 | [`network.protocol.version`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` When applicable. | string | The actual version of the protocol used for network communication. | `1.1`; `2` |
 | [`network.transport`](https://github.com/open-telemetry/semantic-conventions/blob/v1.44.0/docs/registry/attributes/network.md) | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | `Recommended` | string | The transport protocol used for the observed MCP operation. [6] | `tcp`; `quic`; `pipe` |
-| [`gen_ai.prompt.variable`](/docs/registry/attributes/gen-ai.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The variables supplied to the prompt template in the request. [7] | `Alice`; `French` |
-| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [8] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
+| [`mcp.resource.uri`](/docs/registry/attributes/mcp.md) | ![Development](https://img.shields.io/badge/-development-blue) | `Opt-In` | string | The value of the resource uri. [7] | `postgres://database/customers/schema`; `file:///home/user/documents/report.pdf` |
 
 **[1] `error.type`:** When the response carries a JSON-RPC error code that classifies as an error,
 `error.type` SHOULD be set to the string representation of that code. See
@@ -1921,22 +1840,7 @@ Any other error code SHOULD be considered an error.
 **[6] `network.transport`:** This attribute SHOULD be set to `tcp` or `quic` if the transport protocol
 is HTTP. It SHOULD be set to `pipe` if the transport is stdio.
 
-**[7] `gen_ai.prompt.variable`:** Prompt templates are parameterized with variables that are filled in
-at runtime. This attribute records the variable values passed to the
-template. The attribute name defines the variable name, and the
-attribute value is the variable value serialized as a string.
-
-Examples:
-
-- A variable `user_name` with value `Alice` SHOULD be recorded as
-  the `gen_ai.prompt.variable.user_name` attribute with value `"Alice"`.
-- A variable `language` with value `French` SHOULD be recorded as
-  the `gen_ai.prompt.variable.language` attribute with value `"French"`.
-
-> [!Warning]
-> This attribute may contain sensitive information.
-
-**[8] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
+**[7] `mcp.resource.uri`:** This is a URI of the resource provided in the following requests or notifications: `resources/read`, `resources/subscribe`, `resources/unsubscribe`, or `notifications/resources/updated`.
 
 ---
 
@@ -1960,7 +1864,7 @@ Examples:
 | `delete_memory_store` | Delete or deprovision a memory store | ![Development](https://img.shields.io/badge/-development-blue) |
 | `embeddings` | Embeddings operation such as [OpenAI Create embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `execute_tool` | Execute a tool | ![Development](https://img.shields.io/badge/-development-blue) |
-| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [9] | ![Development](https://img.shields.io/badge/-development-blue) |
+| `fetch_response` | Fetch a previously generated model response by its identifier, without performing inference, such as [OpenAI Get a model response](https://platform.openai.com/docs/api-reference/responses/get) [8] | ![Development](https://img.shields.io/badge/-development-blue) |
 | `generate_content` | Multimodal content generation operation such as [Gemini Generate Content](https://ai.google.dev/api/generate-content) | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_agent` | Invoke GenAI agent | ![Development](https://img.shields.io/badge/-development-blue) |
 | `invoke_workflow` | Invoke GenAI workflow | ![Development](https://img.shields.io/badge/-development-blue) |
@@ -1971,7 +1875,7 @@ Examples:
 | `update_memory` | Update existing memory records | ![Development](https://img.shields.io/badge/-development-blue) |
 | `upsert_memory` | Create or update memory records without the caller choosing which | ![Development](https://img.shields.io/badge/-development-blue) |
 
-**[9]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
+**[8]:** Instrumentations SHOULD NOT report token usage (as attributes or metrics) for this operation.
 
 ---
 
