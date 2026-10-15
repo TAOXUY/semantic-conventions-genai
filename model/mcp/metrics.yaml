@@ -7,32 +7,6 @@ attribute_groups:
       - ref: mcp.resource.uri
         requirement_level: opt_in
 
-  - id: mcp.operation.active.metrics.attributes
-    visibility: internal
-    attributes:
-      - ref: mcp.method.name
-        requirement_level: required
-      - ref: gen_ai.tool.name
-        requirement_level:
-          conditionally_required: When operation is related to a specific tool.
-      - ref: gen_ai.prompt.name
-        brief: The name of the prompt or prompt template provided in the request or response.
-        requirement_level:
-          conditionally_required: When operation is related to a specific prompt.
-      - ref: gen_ai.operation.name
-        brief: The name of the GenAI operation being performed.
-        examples: ["execute_tool"]
-        requirement_level:
-          recommended: >
-            SHOULD be set to `execute_tool` when the operation describes a tool
-            call and SHOULD NOT be set otherwise.
-        note: >
-          Populating this attribute for tool calling along with `mcp.method.name`
-          allows consumers to treat MCP tool calls similarly with other tool
-          call types.
-      - ref: mcp.protocol.version
-      - ref_group: mcp.network.protocol.attributes
-
   - id: mcp.session.metrics.attributes
     visibility: internal
     attributes:
@@ -115,7 +89,7 @@ metrics:
       code_generation:
         metric_value_type: int
     attributes:
-      - ref_group: mcp.operation.active.metrics.attributes
+      - ref_group: mcp.request.attributes
       - ref_group: mcp.client.address_and_port.attributes
 
   - name: mcp.server.operation.active
@@ -140,7 +114,7 @@ metrics:
       code_generation:
         metric_value_type: int
     attributes:
-      - ref_group: mcp.operation.active.metrics.attributes
+      - ref_group: mcp.request.attributes
 
   - name: mcp.client.request.size
     requirement_level: opt_in

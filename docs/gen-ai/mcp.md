@@ -211,7 +211,7 @@ All JSON-RPC error codes SHOULD be considered errors.
 
 **[6] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[7] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[7] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[8] `mcp.session.id`:** When the MCP request or notification is part of a session.
 
@@ -451,7 +451,7 @@ Any other error code SHOULD be considered an error.
 
 **[8] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[9] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[9] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[10] `mcp.session.id`:** When the MCP request or notification is part of a session.
 
@@ -647,7 +647,7 @@ All JSON-RPC error codes SHOULD be considered errors.
 
 **[3] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[5] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
@@ -808,7 +808,7 @@ Any other error code SHOULD be considered an error.
 
 **[3] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[5] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
@@ -1078,7 +1078,7 @@ which are the ones known when the operation starts.
 
 **[1] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[2] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly with other tool call types.
+**[2] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[3] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
@@ -1204,7 +1204,7 @@ which are the ones known when the operation starts.
 
 **[1] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[2] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly with other tool call types.
+**[2] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[3] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
@@ -1351,7 +1351,7 @@ All JSON-RPC error codes SHOULD be considered errors.
 
 **[3] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[5] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
@@ -1516,7 +1516,7 @@ All JSON-RPC error codes SHOULD be considered errors.
 
 **[3] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[5] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
@@ -1687,7 +1687,7 @@ Any other error code SHOULD be considered an error.
 
 **[3] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[5] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
@@ -1853,7 +1853,7 @@ Any other error code SHOULD be considered an error.
 
 **[3] `gen_ai.operation.name`:** SHOULD be set to `execute_tool` when the operation describes a tool call and SHOULD NOT be set otherwise.
 
-**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls spans similarly with other tool call types.
+**[4] `gen_ai.operation.name`:** Populating this attribute for tool calling along with `mcp.method.name` allows consumers to treat MCP tool calls similarly to other tool call types.
 
 **[5] `network.protocol.name`:** The value SHOULD be normalized to lowercase.
 
