@@ -22,7 +22,8 @@ On stdio there is no server address or application-layer protocol, so
 `server.address`, `server.port`, and `network.protocol.*` are not set, and the
 SDK only speaks JSON-RPC 2.0, so `jsonrpc.protocol.version` is not set either.
 The scenario opts into `mcp.resource.uri` on the duration and size metrics for
-its `resources/read` call.
+its `resources/read` call, and leaves `gen_ai.prompt.variable` off the metrics
+because it would put prompt argument values into their attribute sets.
 
 A received message reaches the scenario already parsed, so its size is the
 compact JSON re-serialization the conventions allow in that case. Sent messages
